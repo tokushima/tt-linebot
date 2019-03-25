@@ -45,10 +45,9 @@ class Bot{
 	
 	
 	public function add_text($text){
-		new \LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder();
 		$this->message->add(new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($text));
 	}
-	
+		
 	/**
 	 * 
 	 * @param integer $package_id
@@ -128,6 +127,9 @@ class Bot{
 		}
 		return new \LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder($title,$vars_or_url);
 	}
+	
+	// https://github.com/line/line-bot-sdk-php/blob/master/examples/KitchenSink/src/LINEBot/KitchenSink/EventHandler/MessageHandler/TextMessageHandler.php
+	
 	
 	public function reply(\tt\linebot\Event $event){
 		$this->bot->replyMessage($event->reply_token(),$this->message);
