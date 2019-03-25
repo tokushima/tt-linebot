@@ -81,20 +81,35 @@ class Bot{
 		));
 	}
 	
-	public function add_carousel($alt,$vars){
+	public function add_button($alt,$column_var){
+		$buttons = [];
+		
+		foreach(($column_var['buttons'] ?? []) as $bk => $bv){
+			$buttons[] = $this->parse_action($bk,$bv);
+		}
+		$this->message->add(new \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder(
+			$alt,
+			new \LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder(
+				$column_var['title'] ?? null,
+				$column_var['text'] ?? null,
+				$column_var['image'] ?? null,
+				$buttons
+			)
+		));
+	}
+	
+	public function add_carousel($alt,$column_vars){
 		$columns = [];
-		foreach($vars as $v){
+		foreach($column_vars as $column_var){
 			$buttons = [];
 			
-			foreach(($v['buttons'] ?? []) as $bk => $bv){
+			foreach(($column_var['buttons'] ?? []) as $bk => $bv){
 				$buttons[] = $this->parse_action($bk,$bv);
 			}
-			
-			// カルーセルのカラムを作成する
 			$columns[] = new \LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder(
-				$v['title'] ?? null,
-				$v['text'] ?? null,
-				$v['image'] ?? null,
+				$column_var['title'] ?? null,
+				$column_var['text'] ?? null,
+				$column_var['image'] ?? null,
 				$buttons
 			);
 		}
