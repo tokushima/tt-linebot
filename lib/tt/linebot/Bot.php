@@ -140,7 +140,7 @@ class Bot{
 		$b = new \ebi\Browser();
 		$b->bearer_token($this->access_token);
 		$b->header('Content-Type','application/json');
-		$b->do_raw('https://api.line.me/v2/bot/message/reply',$json);
+		$b->do_raw('https://api.line.me/v2/bot/message/reply',trim($json));
 		
 		\ebi\Log::trace($b);
 		
