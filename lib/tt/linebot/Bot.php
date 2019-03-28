@@ -4,6 +4,7 @@ namespace tt\linebot;
 class Bot{
 	private $bot;
 	private $message;
+	private $access_token;
 	
 	public static function client(){
 		$access_token = \ebi\Conf::get('access_token');
@@ -12,7 +13,8 @@ class Bot{
 		return new self($access_token,$secret);		
 	}
 	
-	public function __construct($access_token,$secret){
+	public function __construct($access_token,$secret){		
+		$this->access_token = $access_token;
 		$this->bot = new \LINE\LINEBot(
 			new \LINE\LINEBot\HTTPClient\CurlHTTPClient($access_token),
 			['channelSecret'=>$secret]
@@ -142,7 +144,6 @@ class Bot{
 			'replyToken'=>$event->reply_token(),
 			'messages'=>$json,
 		];
-		
 		
 		$b = new \ebi\Browser();
 		$b->bearer_token($this->access_token);
