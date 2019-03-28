@@ -128,21 +128,26 @@ class Bot{
 		return new \LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder($title,$vars_or_url);
 	}
 	
-	// https://github.com/line/line-bot-sdk-php/blob/master/examples/KitchenSink/src/LINEBot/KitchenSink/EventHandler/MessageHandler/TextMessageHandler.php
-	
 	
 	public function reply(\tt\linebot\Event $event){
 		$this->bot->replyMessage($event->reply_token(),$this->message);
 	}
-	public function reply_json($json){
-		\ebi\Log::trace($json);
+	
+	public function reply_json(\tt\linebot\Event $event,$json){
+		if(is_string($json)){
+			$json = \ebi\Json::decode($json);
+		}
+		
+		$request = [
+			'replyToken'=>$event->reply_token(),
+			'messages'=>$json,
+		];
+		
 		
 		$b = new \ebi\Browser();
 		$b->bearer_token($this->access_token);
 		$b->header('Content-Type','application/json');
-		$b->do_raw('https://api.line.me/v2/bot/message/reply',trim($json));
-		
-		\ebi\Log::trace($b->status(),$b->body());
+		$b->do_raw('https://api.line.me/v2/bot/message/reply',json_encode($request));
 		
 		if($b->status() !== 200){
 			throw new \ebi\exception\InvalidArgumentException($b->body());
