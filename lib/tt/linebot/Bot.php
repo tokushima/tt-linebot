@@ -140,6 +140,8 @@ class Bot{
 		$b->header('Content-Type','application/json');
 		$b->do_raw('https://api.line.me/v2/bot/message/reply',$json);
 		
+		\ebi\Log::trace($b);
+		
 		if($b->status() !== 200){
 			throw new \ebi\exception\InvalidArgumentException($b->body());
 		}
