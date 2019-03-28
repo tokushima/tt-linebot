@@ -134,4 +134,14 @@ class Bot{
 	public function reply(\tt\linebot\Event $event){
 		$this->bot->replyMessage($event->reply_token(),$this->message);
 	}
+	public function reply_json($json){
+		$b = new \ebi\Browser();
+		$b->bearer_token($this->access_token);
+		$b->header('Content-Type','application/json');
+		$b->do_raw('https://api.line.me/v2/bot/message/reply',$json);
+		
+		if($b->status() !== 200){
+			throw new \ebi\exception\InvalidArgumentException($b->body());
+		}
+	}
 }
