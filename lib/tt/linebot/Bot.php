@@ -144,16 +144,11 @@ class Bot{
 			'replyToken'=>$event->reply_token(),
 			'messages'=>$json,
 		];
-		
-		\ebi\Log::trace(json_encode($request));
-		
-		
+				
 		$b = new \ebi\Browser();
 		$b->bearer_token($this->access_token);
 		$b->header('Content-Type','application/json');
 		$b->do_raw('https://api.line.me/v2/bot/message/reply',json_encode($request));
-		
-		\ebi\Log::trace($b);
 		
 		if($b->status() !== 200){
 			throw new \ebi\exception\InvalidArgumentException($b->body());
