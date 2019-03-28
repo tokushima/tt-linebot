@@ -135,7 +135,7 @@ class Bot{
 	
 	public function reply_json(\tt\linebot\Event $event,$json){
 		if(is_string($json)){
-			$json = \ebi\Json::decode($json);
+			$json = \ebi\Json::decode(\ebi\Util::plain_text($json));
 		}
 		
 		$request = [
