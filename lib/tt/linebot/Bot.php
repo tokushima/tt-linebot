@@ -135,6 +135,8 @@ class Bot{
 		$this->bot->replyMessage($event->reply_token(),$this->message);
 	}
 	public function reply_json($json){
+		\ebi\Log::trace($json);
+		
 		$b = new \ebi\Browser();
 		$b->bearer_token($this->access_token);
 		$b->header('Content-Type','application/json');
