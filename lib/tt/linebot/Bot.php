@@ -145,6 +145,9 @@ class Bot{
 			'messages'=>$json,
 		];
 		
+		\ebi\Log::trace(json_encode($request));
+		
+		
 		$b = new \ebi\Browser();
 		$b->bearer_token($this->access_token);
 		$b->header('Content-Type','application/json');
