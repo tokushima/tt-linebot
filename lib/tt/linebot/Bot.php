@@ -140,6 +140,8 @@ class Bot{
 	 * 返信
 	 * @param \LINE\LINEBot\Event\BaseEvent $event
 	 * @param mixed $messages
+	 * @see https://developers.line.biz/ja/services/bot-designer/
+	 * @see https://developers.line.biz/ja/docs/messaging-api/
 	 */
 	public function reply(\LINE\LINEBot\Event\BaseEvent $event,$messages){
 		$this->send('https://api.line.me/v2/bot/message/reply',[
@@ -153,6 +155,8 @@ class Bot{
 	 * @param string[] $tos  ユーザー、グループ、またはトークルームのID
 	 * @param mixed $messages
 	 * @throws \ebi\exception\MaxSizeExceededException
+	 * @see https://developers.line.biz/ja/services/bot-designer/
+	 * @see https://developers.line.biz/ja/docs/messaging-api/
 	 */
 	public function multicast($tos,$messages){
 		if(!is_array($tos)){
@@ -172,6 +176,8 @@ class Bot{
 	 * プッシュメッセージを送信
 	 * @param string $to ユーザー、グループ、またはトークルームのID
 	 * @param mixed $messages
+	 * @see https://developers.line.biz/ja/services/bot-designer/
+	 * @see https://developers.line.biz/ja/docs/messaging-api/
 	 */
 	public function push($to,$messages){
 		$this->send('https://api.line.me/v2/bot/message/push',[
