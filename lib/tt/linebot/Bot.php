@@ -103,7 +103,19 @@ class Bot{
 		if(!isset($this->vars[$event->getReplyToken()])){
 			parse_str($event->getPostbackData(),$this->vars[$event->getReplyToken()]);
 		}
-		return $this->vars[$key] ?? $default;
+		return $this->vars[$event->getReplyToken()][$key] ?? $default;
+	}
+	
+	/**
+	 * Postbackから全て取得
+	 * @param \LINE\LINEBot\Event\PostbackEvent $event
+	 * @return mixed
+	 */
+	public function get_vars(\LINE\LINEBot\Event\PostbackEvent $event){
+		if(!isset($this->vars[$event->getReplyToken()])){
+			parse_str($event->getPostbackData(),$this->vars[$event->getReplyToken()]);
+		}
+		return $this->vars[$event->getReplyToken()];
 	}
 	
 	/**
