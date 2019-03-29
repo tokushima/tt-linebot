@@ -52,7 +52,7 @@ class Bot{
 	 * @param \LINE\LINEBot\Event\BaseEvent $event
 	 * @return integer
 	 */
-	public function get_type(\LINE\LINEBot\Event\BaseEvent $event){
+	public function get_event_type(\LINE\LINEBot\Event\BaseEvent $event){
 		if($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage){
 			return self::EVENT_TYPE_TEXT;
 		}
