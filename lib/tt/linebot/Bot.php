@@ -15,6 +15,10 @@ class Bot{
 	const EVENT_TYPE_UNFOLLOW = 11;
 	
 	
+	/**
+	 * 
+	 * @return \tt\linebot\Bot
+	 */
 	public static function client(){
 		$access_token = \ebi\Conf::get('access_token');
 		$secret = \ebi\Conf::get('secret');
@@ -25,25 +29,29 @@ class Bot{
 	public function __construct($access_token,$secret){
 		$this->access_token = $access_token;
 		$this->bot = new \LINE\LINEBot(
-				new \LINE\LINEBot\HTTPClient\CurlHTTPClient($access_token),
-				['channelSecret'=>$secret]
-				);
+			new \LINE\LINEBot\HTTPClient\CurlHTTPClient($access_token),
+			['channelSecret'=>$secret]
+		);
 	}
 	
 	/**
-	 *
+	 * イベント一覧
 	 * @return \LINE\LINEBot\Event\BaseEvent
 	 */
 	public function get_events(){
 		$post_input = file_get_contents('php://input');
 		
 		return $this->bot->parseEventRequest(
-				$post_input,
-				(new \ebi\Env())->get('HTTP_'.\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE)
-				);
+			$post_input,
+			(new \ebi\Env())->get('HTTP_'.\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE)
+		);
 	}
 	
-	
+	/**
+	 * イベントの種類
+	 * @param \LINE\LINEBot\Event\BaseEvent $event
+	 * @return integer
+	 */
 	public function get_type(\LINE\LINEBot\Event\BaseEvent $event){
 		if($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage){
 			return self::EVENT_TYPE_TEXT;
@@ -66,33 +74,74 @@ class Bot{
 		return null;
 	}
 	
+	/**
+	 * 画像等コンテンツの取得
+	 * @param string $message_id \LINE\LINEBot\Event\MessageEvent->getMessageId()
+	 * @return string
+	 */
 	public function get_content($message_id){
 		return $this->bot->getMessageContent($message_id)->getRawBody();
 	}
 	
-	public function get_text(\LINE\LINEBot\Event\BaseEvent $event){
+	/**
+	 * テキストの取得
+	 * @param \LINE\LINEBot\Event\MessageEvent\TextMessage $event
+	 * @return string
+	 */
+	public function get_text(\LINE\LINEBot\Event\MessageEvent\TextMessage $event){
 		return trim($event->getText());
 	}
-	public function in_vars(\LINE\LINEBot\Event\BaseEvent $event,$key,$default=null){
+	
+	/**
+	 * Postbackから取得
+	 * @param \LINE\LINEBot\Event\PostbackEvent $event
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function in_vars(\LINE\LINEBot\Event\PostbackEvent $event,$key,$default=null){
 		if(!isset($this->vars[$event->getReplyToken()])){
 			parse_str($event->getPostbackData(),$this->vars[$event->getReplyToken()]);
 		}
 		return $this->vars[$key] ?? $default;
 	}
-	public function get_sticker_id(\LINE\LINEBot\Event\BaseEvent $event){
+	
+	/**
+	 * stickerの取得
+	 * @param \LINE\LINEBot\Event\MessageEvent\StickerMessage $event
+	 * @return integer[] [package_id,sticker_id]
+	 */
+	public function get_sticker_id(\LINE\LINEBot\Event\MessageEvent\StickerMessage $event){
 		return [$event->getPackageId(),$event->getStickerId()];
 	}
-	public function get_message_id(\LINE\LINEBot\Event\BaseEvent $event){
+	
+	/**
+	 * message_idの取得
+	 * @param \LINE\LINEBot\Event\BaseEvent $event
+	 * @return string
+	 */
+	public function get_message_id(\LINE\LINEBot\Event\MessageEvent $event){
 		return $event->getMessageId();
 	}
 	
-	public function reply(\tt\linebot\Event $event,$messages){
+	/**
+	 * 返信
+	 * @param \LINE\LINEBot\Event\BaseEvent $event
+	 * @param mixed $messages
+	 */
+	public function reply(\LINE\LINEBot\Event\BaseEvent $event,$messages){
 		$this->send('https://api.line.me/v2/bot/message/reply',[
-			'replyToken'=>$event->reply_token(),
+			'replyToken'=>$event->getReplyToken(),
 			'messages'=>$this->get_message_vars($messages),
 		]);
 	}
 	
+	/**
+	 * マルチキャストメッセージの送信
+	 * @param string[] $tos  ユーザー、グループ、またはトークルームのID
+	 * @param mixed $messages
+	 * @throws \ebi\exception\MaxSizeExceededException
+	 */
 	public function multicast($tos,$messages){
 		if(!is_array($tos)){
 			$tos = [$tos];
@@ -107,6 +156,11 @@ class Bot{
 		]);
 	}
 	
+	/**
+	 * プッシュメッセージを送信
+	 * @param string $to ユーザー、グループ、またはトークルームのID
+	 * @param mixed $messages
+	 */
 	public function push($to,$messages){
 		$this->send('https://api.line.me/v2/bot/message/push',[
 			'to'=>$to,
