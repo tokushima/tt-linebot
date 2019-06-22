@@ -202,4 +202,15 @@ class Bot{
 			throw new \ebi\exception\InvalidArgumentException($b->status().': '.$b->body());
 		}
 	}
+	
+	
+	/**
+	 * 絵文字
+	 * @param string $code 0xを除いた絵文字のコード
+	 * @see https://developers.line.biz/media/messaging-api/emoji-list.pdf
+	 * @return string
+	 */
+	public static function emoticon($code){
+		return mb_convert_encoding(hex2bin(str_repeat('0',8 - strlen($code)).$code), 'UTF-8', 'UTF-32BE');
+	}
 }
