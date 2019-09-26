@@ -12,7 +12,7 @@ class Bot{
 	const EVENT_TYPE_POSTBACK = 4;
 	
 	const EVENT_TYPE_FOLLOW = 11;
-	const EVENT_TYPE_UNFOLLOW = 11;
+	const EVENT_TYPE_UNFOLLOW = 12;
 	
 	
 	/**
