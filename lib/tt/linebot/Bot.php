@@ -35,7 +35,7 @@ class Bot{
 			['channelSecret'=>$secret]
 		);
 		
-		$this->endpoint = \LINE\LINEBot::DEFAULT_DATA_ENDPOINT_BASE;
+		$this->endpoint = \LINE\LINEBot::DEFAULT_ENDPOINT_BASE;
 	}
 	
 	/**
