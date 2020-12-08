@@ -11,7 +11,7 @@
 		}
 	},
 	"require" : {
-		"tokushima/ebi" : ">= 3.2.15",
-		"linecorp/line-bot-sdk" : "^6.0.0"
+		"tokushima/ebi" : ">=2.1.9",
+		"linecorp/line-bot-sdk" : "^3.14.0"
 	}
 }
