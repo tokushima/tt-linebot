@@ -6,6 +6,8 @@ class Bot{
 	private $access_token;
 	private $vars = [];
 	
+	private $endpoint;
+	
 	const EVENT_TYPE_TEXT = 1;
 	const EVENT_TYPE_STICKER = 2;
 	const EVENT_TYPE_IMAGE = 3;
@@ -32,6 +34,8 @@ class Bot{
 			new \LINE\LINEBot\HTTPClient\CurlHTTPClient($access_token),
 			['channelSecret'=>$secret]
 		);
+		
+		$this->endpoint = \LINE\LINEBot::DEFAULT_DATA_ENDPOINT_BASE;
 	}
 	
 	/**
@@ -137,26 +141,26 @@ class Bot{
 	}
 	
 	/**
-	 * 返信
+	 * 応答メッセージを送る
 	 * @param \LINE\LINEBot\Event\BaseEvent $event
 	 * @param mixed $messages
 	 * @see https://developers.line.biz/ja/services/bot-designer/
-	 * @see https://developers.line.biz/ja/docs/messaging-api/
+	 * @see https://developers.line.biz/ja/reference/messaging-api/#messages
 	 */
 	public function reply(\LINE\LINEBot\Event\BaseEvent $event,$messages){
-		$this->send('https://api.line.me/v2/bot/message/reply',[
+		$this->send(sprintf('%s/v2/bot/message/reply',$this->endpoint),[
 			'replyToken'=>$event->getReplyToken(),
 			'messages'=>$this->get_message_vars($messages),
 		]);
 	}
 	
 	/**
-	 * マルチキャストメッセージの送信
+	 * マルチキャストメッセージを送る
 	 * @param string[] $tos  ユーザー、グループ、またはトークルームのID
 	 * @param mixed $messages
 	 * @throws \ebi\exception\MaxSizeExceededException
 	 * @see https://developers.line.biz/ja/services/bot-designer/
-	 * @see https://developers.line.biz/ja/docs/messaging-api/
+	 * @see https://developers.line.biz/ja/reference/messaging-api/#messages
 	 */
 	public function multicast($tos,$messages){
 		if(!is_array($tos)){
@@ -166,21 +170,21 @@ class Bot{
 			throw new \ebi\exception\MaxSizeExceededException('max 150, input '.sizeof($tos));
 		}
 		
-		$this->send('https://api.line.me/v2/bot/message/multicast',[
+		$this->send(sprintf('%s/v2/bot/message/multicast',$this->endpoint),[
 			'to'=>$tos,
 			'messages'=>$this->get_message_vars($messages),
 		]);
 	}
 	
 	/**
-	 * プッシュメッセージを送信
+	 * プッシュメッセージを送る
 	 * @param string $to ユーザー、グループ、またはトークルームのID
 	 * @param mixed $messages
 	 * @see https://developers.line.biz/ja/services/bot-designer/
-	 * @see https://developers.line.biz/ja/docs/messaging-api/
+	 * @see https://developers.line.biz/ja/reference/messaging-api/#messages
 	 */
 	public function push($to,$messages){
-		$this->send('https://api.line.me/v2/bot/message/push',[
+		$this->send(sprintf('%s/v2/bot/message/push',$this->endpoint),[
 			'to'=>$to,
 			'messages'=>$this->get_message_vars($messages),
 		]);
